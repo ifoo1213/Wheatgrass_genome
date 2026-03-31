@@ -1,0 +1,19 @@
+# Steps to compute the TE density among three subgenomes
+# Step 1: Prepare the gene ID and start end bed file for each subgenome
+# Example: chrH_1	134075	138421	Elymus_hoffomanni_chrH_1_000001	+
+
+# Step 2: Generate_flanking_region for each gene -5000 to 0 for 5 prime, 0 to 5000 for 3 prime
+python generate_flanking_region.py H_genome.bed H_genome_flanking.bed
+
+# Step 3: Make 10 bp windows for each flanking region
+bedtools makewindows -b H_genome_flanking.bed -w 10 -i srcwinnum > temp_H_genome_flanking.bed
+
+# Step 4: Count the coverage of LTR in the windows of each subgenome
+
+bedtools intersect -a temp_H_genome_flanking.bed -b LTR.bed -c -wa -s > coverage_H_genome.txt
+
+# Step 5: Compute the average density of LTR for each position from -5000 to 0 (5 prime), and from 0 to 5000 (3 prime)
+
+python Coverage_LTR.py
+
+python LTR_plot.py
